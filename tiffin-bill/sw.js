@@ -1,12 +1,5 @@
-const CACHE_NAME = 'tiffin-bill-pwa-v41';
-const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './sw.js'
-];
+const CACHE_NAME = 'tiffin-bill-pwa-v45';
+const APP_SHELL = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./sw.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -19,9 +12,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      ))
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -30,15 +21,23 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
 
-  // Navigation: prefer the cached app shell for instant/offline startup.
+  // Navigation is network-first so a newly deployed index.html is picked up
+  // immediately. The cached app remains available when offline.
   if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match('./index.html').then(cached => cached || fetch(request))
+      fetch(request)
+        .then(response => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  // Static app assets are cache-first. All food images are embedded in index.html.
   event.respondWith(
     caches.match(request).then(cached => {
       if (cached) return cached;
