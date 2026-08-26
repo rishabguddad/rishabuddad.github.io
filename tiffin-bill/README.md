@@ -1,6 +1,6 @@
 # Tiffin Bill — Offline PWA
 
-This is the browser/PWA version of Tiffin Bill v41. It is designed to be installed on the restaurant owner's iPhone and Android phone without creating a native iOS/Android application.
+This is the browser/PWA version of Tiffin Bill. It is designed to be installed on the restaurant owner's iPhone and Android phone without creating a native iOS/Android application.
 
 ## iPhone
 
