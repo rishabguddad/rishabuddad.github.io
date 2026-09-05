@@ -252,6 +252,60 @@ button,input{font:inherit}button{border:0}
   .dash-custom{grid-template-columns:1fr auto 1fr}
   .dash-custom button{grid-column:1/-1}
 }
+
+/* iOS cart safety fix
+   Keep the persistent cart fully inside the visual viewport and above the
+   iPhone home-indicator safe area. */
+html {
+  min-height: 100%;
+  background: #fff;
+}
+body {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  margin: 0;
+  overflow: hidden;
+}
+.app {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+}
+.cart {
+  box-sizing: border-box;
+  bottom: 0;
+  padding-bottom: max(7px, env(safe-area-inset-bottom));
+  padding-bottom: calc(7px + env(safe-area-inset-bottom));
+}
+.cart-inner {
+  box-sizing: border-box;
+  max-height: min(190px, 31dvh);
+  overflow: hidden;
+}
+.selected {
+  min-height: 0;
+  max-height: 96px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.hint {
+  line-height: 1.25;
+  padding-bottom: 1px;
+}
+@media (max-width: 430px) {
+  .cart-inner {
+    max-height: min(190px, 32dvh);
+  }
+}
+@media (max-width: 360px) {
+  .cart-inner {
+    max-height: min(184px, 31dvh);
+  }
+  .selected {
+    max-height: 86px;
+  }
+}
+
 </style></head><body><div class="app"><header class="top"><div class="brand"><div class="brand-left"><div class="logo">₹</div><div><div class="title">Tiffin Bill</div><div class="sub">Fast offline billing</div></div></div><div class="top-actions"><button class="manage-top-btn dashboard-top-btn" id="dashboardBtn">📊 Dashboard</button><button class="manage-top-btn" id="manageBtn">⚙️ Manage Menu</button></div></div><div class="app-nav" id="appNav">
 <button id="menuTab" class="active" type="button">🍽️ Menu</button>
 <button id="customersTab" type="button">👥 Customers</button>
